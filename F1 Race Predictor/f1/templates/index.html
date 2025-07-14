@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Race Winner Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            const form = document.getElementById('predictionForm');
+            const formData = new FormData(form);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            const resultDiv = document.getElementById('result');
+            if (result.error) {
+                resultDiv.innerHTML = `<p class="text-red-500">${result.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p class="text-green-500 font-bold">${result.prediction}</p>`;
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">F1 Race Winner Prediction</h1>
+        <form id="predictionForm" onsubmit="submitForm(event)" class="space-y-4">
+            <div>
+                <label for="grid" class="block text-sm font-medium text-gray-700">Grid Position</label>
+                <input type="number" id="grid" name="grid" step="1" min="1" max="24" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label for="position_qualifying" class="block text-sm font-medium text-gray-700">Qualifying Position</label>
+                <input type="number" id="position_qualifying" name="position_qualifying" step="1" min="1" max="24" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label for="avg_driver_points" class="block text-sm font-medium text-gray-700">Average Driver Points</label>
+                <input type="number" id="avg_driver_points" name="avg_driver_points" step="0.01" min="0" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label for="avg_constructor_points" class="block text-sm font-medium text-gray-700">Average Constructor Points</label>
+                <input type="number" id="avg_constructor_points" name="avg_constructor_points" step="0.01" min="0" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label for="avg_lap_time_ms" class="block text-sm font-medium text-gray-700">Average Lap Time (ms)</label>
+                <input type="number" id="avg_lap_time_ms" name="avg_lap_time_ms" step="0.01" min="0" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div>
+                <label for="fastestLapTime_seconds" class="block text-sm font-medium text-gray-700">Fastest Lap Time (seconds)</label>
+                <input type="number" id="fastestLapTime_seconds" name="fastestLapTime_seconds" step="0.01" min="0" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
+                Predict
+            </button>
+        </form>
+        <div id="result" class="mt-4 text-center"></div>
+    </div>
+</body>
+</html>
